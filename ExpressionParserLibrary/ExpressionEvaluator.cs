@@ -29,6 +29,7 @@ public static class ExpressionEvaluator
         var position = 0;
         var anchor = 0;
         bool running;
+        var isSubtraction = false;
 
         do
         {
@@ -46,7 +47,12 @@ public static class ExpressionEvaluator
 
                 isConverted.Throw("Invalid conversion").IfFalse();
 
-                result.Add(numberResult);
+
+                result.Add(isSubtraction ? decimal.Negate(numberResult) : numberResult);
+
+                //if operator is - then next value needs to be negative
+                isSubtraction = expression[position] == '-';
+
                 anchor = position + 1;
             }
 
