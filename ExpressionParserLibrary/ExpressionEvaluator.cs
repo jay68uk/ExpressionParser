@@ -10,10 +10,10 @@ public static class ExpressionEvaluator
         decimal calculated = new(0);
 
         var validExpression = CleanCheckExpression(expression);
-        validExpression.ThrowIfNull("Invalid characters in expression");
+        validExpression.ThrowIfNull("Invalid characters in expression", nameof(expression));
 
         var parsed = ParseExpression(validExpression);
-        parsed.ThrowIfNull("Invalid expression");
+        parsed.ThrowIfNull("Invalid expression", nameof(expression));
 
         // ReSharper disable once ForCanBeConvertedToForeach
         // ReSharper disable once LoopCanBeConvertedToQuery
@@ -79,6 +79,7 @@ public static class ExpressionEvaluator
     {
         var lastValue = list.LastOrDefault();
 
+        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
         return operatorEnum switch
         {
             OperatorEnum.Multiply => lastValue * numberResult,

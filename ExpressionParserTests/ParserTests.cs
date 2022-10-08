@@ -5,13 +5,13 @@ namespace ExpressionParserTests;
 public class ExpressionCalculatorTests
 {
     [Theory]
-    [InlineData("2+-1", "Invalid expression (Parameter 'parsed')")]
-    [InlineData("2+(1-1)", "Invalid characters in expression (Parameter 'validExpression')")]
+    [InlineData("2+-1", "Invalid expression (Parameter 'expression')")]
+    [InlineData("2+(1-1)", "Invalid characters in expression (Parameter 'expression')")]
     public void Invalid_Expression_ReturnNull(string expression, string exception)
     {
         void Action()
         {
-            ExpressionEvaluator.EvaluateExpression(expression);
+            _ = ExpressionEvaluator.EvaluateExpression(expression)!;
         }
 
         var ex = Assert.Throws<ArgumentNullException>(Action);
@@ -29,7 +29,7 @@ public class ExpressionCalculatorTests
     [InlineData("20/10*5/4", 2.5)]
     public void Valid_Expression_ReturnArray(string expression, decimal expected)
     {
-        var check = ExpressionEvaluator.EvaluateExpression(expression);
+        var check = ExpressionEvaluator.EvaluateExpression(expression)!;
 
         Assert.Equal(expected, check);
     }
