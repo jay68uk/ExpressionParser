@@ -26,6 +26,7 @@ public class ExpressionCalculatorTests
     [InlineData(" 2 * 2 ", 4)]
     [InlineData("4/2", 2)]
     [InlineData("2+4/2+3*2-5", 5)]
+    [InlineData("20/10*5/4", 2.5)]
     public void Valid_Expression_ReturnArray(string expression, decimal expected)
     {
         var check = ExpressionEvaluator.EvaluateExpression(expression);
