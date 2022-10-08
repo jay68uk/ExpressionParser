@@ -29,7 +29,7 @@ public static class ExpressionEvaluator
         var position = 0;
         var anchor = 0;
         bool running;
-        var isSubtraction = false;
+        var operation = OperatorEnum.Add;
 
         do
         {
@@ -47,11 +47,22 @@ public static class ExpressionEvaluator
 
                 isConverted.Throw("Invalid conversion").IfFalse();
 
+                switch (operation)
+                {
+                    case OperatorEnum.Add:
+                        result.Add(numberResult);
+                        break;
+                    case OperatorEnum.Subtract:
+                        result.Add(decimal.Negate(numberResult));
+                        break;
+                    case OperatorEnum.Multiply:
+                    case OperatorEnum.Divide:
+                    default:
+                        result[^1] = PriorityCalculation(numberResult, result, operation);
+                        break;
+                }
 
-                result.Add(isSubtraction ? decimal.Negate(numberResult) : numberResult);
-
-                //if operator is - then next value needs to be negative
-                isSubtraction = expression[position] == '-';
+                operation = GetOperator(expression[position]);
 
                 anchor = position + 1;
             }
@@ -62,6 +73,29 @@ public static class ExpressionEvaluator
 
 
         return result;
+    }
+
+    private static decimal PriorityCalculation(decimal numberResult, List<decimal> list, OperatorEnum operatorEnum)
+    {
+        var lastValue = list.LastOrDefault();
+
+        return operatorEnum switch
+        {
+            OperatorEnum.Multiply => lastValue * numberResult,
+            OperatorEnum.Divide => lastValue / numberResult,
+            _ => throw new ArgumentOutOfRangeException(nameof(operatorEnum), operatorEnum, null)
+        };
+    }
+
+    private static OperatorEnum GetOperator(char opType)
+    {
+        return opType switch
+        {
+            '-' => OperatorEnum.Subtract,
+            '*' => OperatorEnum.Multiply,
+            '/' => OperatorEnum.Divide,
+            _ => OperatorEnum.Add
+        };
     }
 
     private static string? CleanCheckExpression(string expression)
